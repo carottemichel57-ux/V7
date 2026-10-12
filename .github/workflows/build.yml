@@ -1,0 +1,25 @@
+name: Build Vita game plugin
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: vitasdk/vitasdk:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S game -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --parallel
+      - name: Publish suprx
+        uses: actions/upload-artifact@v4
+        with:
+          name: vitacraft-suprx
+          path: build/vitacraft.suprx
+          if-no-files-found: error
